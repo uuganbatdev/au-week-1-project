@@ -6,20 +6,8 @@ const port = 3042;
 app.use(cors());
 app.use(express.json());
 
-const balances = {
-  "0x1": {
-    balance: 100,
-    addressDomainName: 'firstOne',
-  },
-  "0x2": {
-    balance: 50,
-    addressDomainName: 'firstOne',
-  },
-  "0x3": {
-    balance: 75,
-    addressDomainName: 'firstOne',
-  },
-};
+let addressCounter = 0;
+const balances = {};
 
 app.get("/balance/:address", (req, res) => {
   const { address } = req.params;
@@ -28,12 +16,17 @@ app.get("/balance/:address", (req, res) => {
 });
 
 app.get("/balanceAll", (req, res) => {
-  res.send({balances});
+  res.send({ balances });
 });
 
-// app.post("/balanceAll", (req, res) => {
-//   res.send({balances});
-// });
+app.post("/generateAddress", (req, res) => {
+  const { amount, addressName } = req.body;
+  const generatedAddress = `0x${addressCounter}`;
+  addressCounter++;
+  balances[generatedAddress] = { balance: amount, addressName };
+
+  res.send({ newAddress: balances[generatedAddress] });
+});
 
 app.post("/send", (req, res) => {
   const { sender, recipient, amount } = req.body;

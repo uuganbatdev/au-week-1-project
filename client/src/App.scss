@@ -73,10 +73,16 @@ input {
     border-radius: 5px;
     padding: 20px;
     margin-right: 20px;
+    margin-top: 20px;
   }
   .item-right {
     margin-left: 20px;
     font-weight: bold;
+  }
+
+  .item-left {
+    width: 120px;
+    display: inline-block;
   }
 }
 
