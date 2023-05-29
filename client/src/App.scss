@@ -64,6 +64,22 @@ input {
   }
 }
 
+.all-address {
+  width: 100%;
+  .address-item {
+    width: 300px;
+    height: 100px;
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 20px;
+    margin-right: 20px;
+  }
+  .item-right {
+    margin-left: 20px;
+    font-weight: bold;
+  }
+}
+
 .wallet {
   display: flex;
   flex-direction: column;

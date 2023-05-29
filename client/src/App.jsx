@@ -1,5 +1,6 @@
 import Wallet from "./Wallet";
 import Transfer from "./Transfer";
+import AllAddress from "./AllAddress";
 import "./App.scss";
 import { useState } from "react";
 
@@ -16,6 +17,7 @@ function App() {
         setAddress={setAddress}
       />
       <Transfer setBalance={setBalance} address={address} />
+      <AllAddress />
     </div>
   );
 }

@@ -7,9 +7,18 @@ app.use(cors());
 app.use(express.json());
 
 const balances = {
-  "0x1": 100,
-  "0x2": 50,
-  "0x3": 75,
+  "0x1": {
+    balance: 100,
+    addressDomainName: 'firstOne',
+  },
+  "0x2": {
+    balance: 50,
+    addressDomainName: 'firstOne',
+  },
+  "0x3": {
+    balance: 75,
+    addressDomainName: 'firstOne',
+  },
 };
 
 app.get("/balance/:address", (req, res) => {
@@ -17,6 +26,14 @@ app.get("/balance/:address", (req, res) => {
   const balance = balances[address] || 0;
   res.send({ balance });
 });
+
+app.get("/balanceAll", (req, res) => {
+  res.send({balances});
+});
+
+// app.post("/balanceAll", (req, res) => {
+//   res.send({balances});
+// });
 
 app.post("/send", (req, res) => {
   const { sender, recipient, amount } = req.body;
