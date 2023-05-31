@@ -1,12 +1,14 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
+const { secp256k1 } = require("ethereum-cryptography/secp256k1");
+const { toHex } = require("ethereum-cryptography/utils");
+
 const port = 3042;
 
 app.use(cors());
 app.use(express.json());
 
-let addressCounter = 0;
 const balances = {};
 
 app.get("/balance/:address", (req, res) => {
@@ -21,11 +23,9 @@ app.get("/balanceAll", (req, res) => {
 
 app.post("/generateAddress", (req, res) => {
   const { amount, addressName } = req.body;
-  const generatedAddress = `0x${addressCounter}`;
-  addressCounter++;
-  balances[generatedAddress] = { balance: amount, addressName };
+  const { privateKey, publicKey } = generateAddress({ amount, addressName });
 
-  res.send({ newAddress: balances[generatedAddress] });
+  res.send({ privateKey, publicKey });
 });
 
 app.post("/send", (req, res) => {
@@ -34,11 +34,11 @@ app.post("/send", (req, res) => {
   setInitialBalance(sender);
   setInitialBalance(recipient);
 
-  if (balances[sender] < amount) {
+  if (balances[sender].balance < amount) {
     res.status(400).send({ message: "Not enough funds!" });
   } else {
-    balances[sender] -= amount;
-    balances[recipient] += amount;
+    balances[sender].balance -= amount;
+    balances[recipient].balance += amount;
     res.send({ balance: balances[sender] });
   }
 });
@@ -49,6 +49,16 @@ app.listen(port, () => {
 
 function setInitialBalance(address) {
   if (!balances[address]) {
-    balances[address] = 0;
+    balances[address] = { balance: 0, addressName: "" };
   }
+}
+
+function generateAddress({ amount, addressName }) {
+  const privateKey = secp256k1.utils.randomPrivateKey();
+  const publicKey = secp256k1.getPublicKey(privateKey);
+  const hexPublic = toHex(publicKey);
+  const hexPrivate = toHex(privateKey);
+  balances[hexPublic] = { balance: amount || 0, addressName };
+
+  return { privateKey: hexPrivate, publicKey: hexPublic };
 }

@@ -1,8 +1,9 @@
 import { useState } from "react";
 import server from "./server";
 
-function Transfer({ address, setBalance }) {
+function Transfer({ getList }) {
   const [sendAmount, setSendAmount] = useState("");
+  const [sender, setSender] = useState("");
   const [recipient, setRecipient] = useState("");
 
   const setValue = (setter) => (evt) => setter(evt.target.value);
@@ -14,11 +15,12 @@ function Transfer({ address, setBalance }) {
       const {
         data: { balance },
       } = await server.post(`send`, {
-        sender: address,
+        sender: sender,
         amount: parseInt(sendAmount),
         recipient,
       });
-      setBalance(balance);
+      getList();
+      // setBalance(balance);
     } catch (ex) {
       alert(ex.response.data.message);
     }
@@ -28,6 +30,14 @@ function Transfer({ address, setBalance }) {
     <form className="container transfer" onSubmit={transfer}>
       <h1>Send Transaction</h1>
 
+      <label>
+        Sender
+        <input
+          placeholder="sender"
+          value={sender}
+          onChange={setValue(setSender)}
+        ></input>
+      </label>
       <label>
         Send Amount
         <input

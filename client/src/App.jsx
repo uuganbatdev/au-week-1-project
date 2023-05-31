@@ -10,6 +10,10 @@ function App() {
   const [address, setAddress] = useState("");
   const [amount, setAmount] = useState("");
   const [addressName, setAddressName] = useState("");
+  const [generatedWallet, setGeneratedWallet] = useState({
+    publicKey: "",
+    privateKey: "",
+  });
 
   const [list, setList] = useState([]);
 
@@ -38,14 +42,13 @@ function App() {
 
     try {
       const {
-        data: { newAddress },
+        data: { privateKey, publicKey },
       } = await server.post(`generateAddress`, {
         amount: parseInt(amount),
         addressName,
       });
       getList();
-      console.log(newAddress);
-      // setBalance(balance);
+      setGeneratedWallet({ publicKey, privateKey });
     } catch (ex) {
       alert(ex.response.data.message);
     }
@@ -59,8 +62,9 @@ function App() {
         addressName={addressName}
         setAddressName={setAddressName}
         generate={generate}
+        generatedWallet={generatedWallet}
       />
-      <Transfer setBalance={setBalance} address={address} />
+      <Transfer getList={getList}  />
       <AllAddress list={list} />
     </div>
   );

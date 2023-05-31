@@ -1,11 +1,10 @@
-import { useState } from "react";
-
 function GenerateWallet({
   amount,
   setAmount,
   generate,
   addressName,
   setAddressName,
+  generatedWallet,
 }) {
   return (
     <form className="container wallet" onSubmit={generate}>
@@ -25,7 +24,18 @@ function GenerateWallet({
         ></input>
       </label>
       <input type="submit" className="button" value="Generate" />
-
+      {generatedWallet.privateKey && generatedWallet.publicKey && (
+        <div style={{ marginTop: 20 }}>
+          <div>Your private key: (save!)</div>
+          <div className="item-right" style={{ width: 400 }}>
+            {generatedWallet.privateKey} 
+          </div>
+          <div>Your public key:</div>
+          <div className="item-right" style={{ width: 400 }}>
+            <div>{generatedWallet.publicKey}</div>
+          </div>
+        </div>
+      )}
       {/* <div className="balance">Balance: {balance}</div> */}
     </form>
   );
